@@ -1,7 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const {createNewUser}=require("./controller")
+const {createNewUser, authenticateUser}=require("./controller")
 
+
+
+
+
+//signin
+router.post("/",async(req,res)=>{
+    try {
+        let {email,password}=req.body;
+        email.trim();
+        password.trim();
+
+
+        if (!(email && password)){
+            throw Error('Empty credentials supplied')
+        }
+
+        const authenticatedUser= await authenticateUser({email,password})
+
+        res.status(200).json(authenticatedUser);
+        
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
+})
+
+//signup
 router.post("/signup",async(req,res)=>{
     try {
         console.log('received signup request:')

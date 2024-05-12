@@ -12,6 +12,10 @@ const authenticateUser = async(data)=>{
         if (!fetchedUser){
             throw Error("Invalid email entered");
         }
+
+        if (!fetchedUser.verified){
+            throw Error("Email hasn't been verified yet, check your inbox");
+        }
         
         const hashedPassword = fetchedUser.password;
         const passwordMatch = await verifyHashedData(password,hashedPassword)
@@ -38,7 +42,6 @@ const authenticateUser = async(data)=>{
 const createNewUser= async(data)=>{
     try {
         const{name,email,password}=data;
-        console.log('received password', password)
 
         //checking if user already exist
 
@@ -50,7 +53,6 @@ const createNewUser= async(data)=>{
 
         //hash password
         const hashedPassword= await hashData(password);
-        console.log('Hashed password', hashedPassword)
         const newUser = new User({
             name,
             email,

@@ -1,5 +1,44 @@
 const User = require("./../user/model");
-const {sendOTP}= require("./../otp/controller");
+const {sendOTP,verifyOTP,deleteOTP}= require("./../otp/controller");
+const {hashData}= require("./../../utils/hashData");
+const { hash } = require("bcrypt");
+
+
+
+
+
+
+const resetUserPassword = async ({
+    email, otp,newPassword
+})=>{
+
+    try {
+        const validOTP= await verifyOTP({email,otp});
+        if (!validOTP){
+            throw Error("Invalid code passed, check your");
+        }
+
+
+        //updatae user record with new password
+        if (newPassword.length<5){
+            throw Error("Password is too");
+        }
+        
+
+       const hashedNewPassword = await hashData(newPassword);
+       await User.updateOne({email}, {password:hashedNewPassword});
+       await deleteOTP(email);
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+
+
+
+
+
 
 
 const sendPasswordResetOTPEmail = async (email)=>{
@@ -35,4 +74,4 @@ const sendPasswordResetOTPEmail = async (email)=>{
 
 
 
-module.exports={sendPasswordResetOTPEmail};
+module.exports={sendPasswordResetOTPEmail,resetUserPassword};

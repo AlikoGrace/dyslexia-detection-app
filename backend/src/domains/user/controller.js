@@ -6,8 +6,12 @@ const createToken = require("./../../utils/createToken")
 const authenticateUser = async(data)=>{
     try {
         const{email,password}=data;
-
+s
         const fetchedUser = await User.findOne({email})
+
+        //Extract user Id from fetched user for child registration
+        const userId = fetchedUser._d
+        console.log(userId);
 
         if (!fetchedUser){
             throw Error("Invalid email entered");
@@ -31,7 +35,7 @@ const authenticateUser = async(data)=>{
 
         //assign user token
         fetchedUser.token= token
-        return fetchedUser;
+        return {fetchedUser,userId};
 
         
     } catch (error) {

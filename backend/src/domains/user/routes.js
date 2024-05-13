@@ -22,6 +22,7 @@ router.post("/",async(req,res)=>{
         password.trim();
 
 
+        
         if (!(email && password)){
             throw Error('Empty credentials supplied')
         }
